@@ -19,6 +19,14 @@ jobs:
       - name: Print Gradle Tasks
         shell: bash
         run: ./gradlew tasks
+      - name: this one fails
+        run: false
+      - name: always run
+        if: always()
+        run: echo I always run
+      - name: run on failures
+        if: failure()
+        run: echo Failure detected
   run-on-windows:
     runs-on: windows-2022
     steps:
