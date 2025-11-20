@@ -15,6 +15,6 @@ jobs:
       - name: Hello World
         run: echo Hello, World!
       - name: Checkout the repo
-        uses: actions/checkout@main
+        uses: actions/checkout@v5.0.1
       - name: Print Gradle Tasks
         run: ./gradlew tasks
