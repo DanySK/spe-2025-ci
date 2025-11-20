@@ -13,5 +13,7 @@ jobs:
     steps:
       - name: Hello World
         run: echo Hello, World!
+      - name: Checkout the repo
+        uses: actions/checkout@main
       - name: Print Gradle Tasks
         run: ./gradlew tasks
