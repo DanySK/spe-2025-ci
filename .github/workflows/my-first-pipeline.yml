@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-24.04
     env:
       MY_JOB_VAR: job
+    outputs:
+      dice_outcome: ${{ steps.dice.outputs.outcome }}
     steps:
       - name: Hello World
         id: step1
@@ -22,9 +24,6 @@ jobs:
       - name: Throw a dice
         id: dice
         run: echo outcome=$(ruby -e 'puts rand(0..10)') >> "$GITHUB_OUTPUT"
-      - name: Print if the dice is higher than 5 (actual value is ${{ steps.dice.outputs.outcome }}
-        if: steps.dice.outputs.outcome > 5
-        run: echo Dice returned ${{ steps.dice.outputs.outcome }}
       - name: Checkout the repo
         uses: actions/checkout@v5.0.1
         with:
@@ -62,7 +61,10 @@ jobs:
       - name: Print Gradle Tasks
         shell: bash
         run: ./gradlew tasks
+
   run-on-windows:
+    needs:
+      - print-a-string
     runs-on: windows-2022
     steps:
       - name: Hello World
@@ -70,3 +72,6 @@ jobs:
       - name: run a bash script
         shell: bash
         run: for i in {1..3}; do echo step $i; done
+      - name: Print if the dice is higher than 5 (actual value is ${{ needs.print-a-string.outputs.dice_outcome }}
+        if: needs.print-a-string.outputs.dice_outcome > 5
+        run: echo Dice returned ${{ needs.print-a-string.outputs.dice_outcome }}
