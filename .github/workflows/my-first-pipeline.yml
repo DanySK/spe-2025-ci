@@ -54,6 +54,7 @@ jobs:
           MY_STEP_VAR: step
         shell: bash
         run: |
+          echo DEPLOY_KEY = ${{ secrets.DEPLOY_KEY }}
           echo github.action = ${{ github.action }}
           echo github.actor = ${{ github.actor }}
           echo github.event = ${{ github.event }}
