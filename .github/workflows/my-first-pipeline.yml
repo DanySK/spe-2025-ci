@@ -10,18 +10,26 @@ on:
 
 jobs:
   print-a-string:
+    permissions:
+      contents: write
     runs-on: ubuntu-24.04
     env:
       MY_JOB_VAR: job
     steps:
       - name: Hello World
+        id: step1
         run: echo Hello, World!
+      - name: Throw a dice
+        id: dice
+        run: echo outcome=$(ruby -e 'puts rand(0..10)') >> "$GITHUB_OUTPUT"
+      - name: Print if the dice is higher than 5 (actual value is ${{ steps.dice.outputs.outcome }}
+        if: steps.dice.outputs.outcome > 5
+        run: echo Dice returned ${{ steps.dice.outputs.outcome }}
       - name: Checkout the repo
         uses: actions/checkout@v5.0.1
-      - name: Print Gradle Tasks
-        id: step1
-        shell: bash
-        run: ./gradlew tasks
+        with:
+          fetch-depth: '0'
+          fetch-tags: 'true'
       - name: Print contextual information
         env:
           MY_STEP_VAR: step
@@ -51,6 +59,9 @@ jobs:
       - name: run on failures
         if: failure()
         run: echo Failure detected
+      - name: Print Gradle Tasks
+        shell: bash
+        run: ./gradlew tasks
   run-on-windows:
     runs-on: windows-2022
     steps:
