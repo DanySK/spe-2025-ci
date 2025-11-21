@@ -11,15 +11,39 @@ on:
 jobs:
   print-a-string:
     runs-on: ubuntu-24.04
+    env:
+      MY_JOB_VAR: job
     steps:
       - name: Hello World
         run: echo Hello, World!
       - name: Checkout the repo
         uses: actions/checkout@v5.0.1
       - name: Print Gradle Tasks
+        id: step1
         shell: bash
         run: ./gradlew tasks
-      - name: this one fails
+      - name: Print contextual information
+        env:
+          MY_STEP_VAR: step
+        shell: bash
+        run: |
+          echo github.action = ${{ github.action }}
+          echo github.actor = ${{ github.actor }}
+          echo github.event = ${{ github.event }}
+          echo github.event_name = ${{ github.event_name }}
+          echo github.ref = ${{ github.ref }}
+          echo github.repository = ${{ github.repository }}
+          echo github.repository_id = ${{ github.repository_id }}
+          echo github.action = ${{ github.repository_owner }}
+          echo github.sha = ${{ github.sha }}
+          echo github.token = ${{ github.token }}
+          echo env.PATH = ${{ github.PATH }}
+          echo env.MY_JOB_VAR = ${{ github.MY_JOB_VAR }}
+          echo env.MY_STEP_VAR = ${{ github.MY_STEP_VAR }}
+          echo steps.step1.outcome = ${{ steps.step1.outcome }}
+          echo runner.os = ${{ runner.os }}
+      - name: this one fails on pull requests
+        if: github.event_name == 'pull_request'
         run: false
       - name: always run
         if: always()
